@@ -60,7 +60,7 @@
         <div class="control-group">
             <h3>매질 및 지형</h3>
             <label>1층 암석</label>
-            <select id="rock1" onchange="updateState()">
+            <select id="rock1" onchange="changeRock()">
                 <option value="granite" selected>화강암 (ρ=2.7)</option>
                 <option value="sandstone">사암 (ρ=2.3)</option>
                 <option value="water">물 (ρ=1.0, μ=0)</option>
@@ -73,11 +73,13 @@
         <div class="control-group">
             <h3>응력 조건</h3>
             <label>최대 주응력 (σ1, MPa)</label>
-            <input type="number" id="sigma1" value="40" onchange="updateState()">
+            <input type="number" id="sigma1" value="60" onchange="updateState()">
             <label>최소 주응력 (σ3, MPa)</label>
-            <input type="number" id="sigma3" value="10" onchange="updateState()">
+            <input type="number" id="sigma3" value="20" onchange="updateState()">
             <label>점착력 (C, MPa)</label>
-            <input type="number" id="cohesion" value="5" onchange="updateState()">
+            <input type="number" id="cohesion" value="10" onchange="updateState()">
+            <label>내부 마찰각 (φ, °)</label>
+            <input type="number" id="phi" value="30" onchange="updateState()">
         </div>
 
         <div class="control-group">
@@ -144,6 +146,7 @@
         sigma1: 60,
         sigma3: 20,
         cohesion: 10,
+        phi: 30,
         crustThickness: 30
     };
 
@@ -155,12 +158,20 @@
         updateState();
     }
 
+    function changeRock() {
+        const rock = ROCKS[document.getElementById('rock1').value];
+        document.getElementById('cohesion').value = rock.cohesion;
+        document.getElementById('phi').value = rock.phi;
+        updateState();
+    }
+
     function updateState() {
         state.h = parseFloat(document.getElementById('elevation').value);
         state.rock1 = ROCKS[document.getElementById('rock1').value];
         state.sigma1 = parseFloat(document.getElementById('sigma1').value);
         state.sigma3 = parseFloat(document.getElementById('sigma3').value);
         state.cohesion = parseFloat(document.getElementById('cohesion').value);
+        state.phi = parseFloat(document.getElementById('phi').value);
         
         document.getElementById('elev-val').innerText = state.h + " km";
         
@@ -197,7 +208,7 @@
         // 요약 카드 업데이트
         const center = (state.sigma1 + state.sigma3) / 2;
         const radius = (state.sigma1 - state.sigma3) / 2;
-        const phiRad = state.rock1.phi * Math.PI / 180;
+        const phiRad = state.phi * Math.PI / 180;
         // 점(center, 0)에서 직선 tau = cohesion + sigma_n * tan(phi) 까지의 거리
         // 직선 방정식: tan(phi)*sigma_n - tau + cohesion = 0
         const distToEnvelope = Math.abs(Math.tan(phiRad) * center + state.cohesion) / Math.sqrt(Math.pow(Math.tan(phiRad), 2) + 1);
@@ -367,11 +378,15 @@
             document.getElementById('sigma1').value = 80;
             document.getElementById('sigma3').value = 20;
             document.getElementById('rock1').value = 'granite';
+            document.getElementById('cohesion').value = ROCKS.granite.cohesion;
+            document.getElementById('phi').value = ROCKS.granite.phi;
         } else if(type === 'rift') {
             document.getElementById('elevation').value = -1;
             document.getElementById('sigma1').value = 20;
             document.getElementById('sigma3').value = 5;
             document.getElementById('rock1').value = 'sandstone';
+            document.getElementById('cohesion').value = ROCKS.sandstone.cohesion;
+            document.getElementById('phi').value = ROCKS.sandstone.phi;
         }
         updateState();
     }
