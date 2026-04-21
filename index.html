@@ -12,31 +12,35 @@
             --accent: #3498db;
             --bg: #f4f7f6;
         }
-        body { font-family: 'Pretendard', sans-serif; margin: 0; background: var(--bg); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        header { background: var(--primary); color: white; padding: 1rem; text-align: center; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Pretendard', sans-serif; margin: 0; background: var(--bg); display: flex; flex-direction: column; height: 100vh; overflow: hidden; font-size: 14px; }
+        header { background: var(--primary); color: white; padding: 0.5rem 1rem; text-align: center; flex-shrink: 0; }
+        header h1 { margin: 0; font-size: 1.2rem; }
         
-        main { display: flex; flex: 1; overflow: hidden; gap: 10px; padding: 10px; }
+        main { display: flex; flex: 1; overflow: hidden; gap: 8px; padding: 8px; }
         
-        /* 좌측 조작 패널 */
-        #panel { width: 300px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow-y: auto; }
-        .control-group { border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 10px; }
-        label { display: block; font-size: 0.85rem; margin-top: 8px; font-weight: bold; }
-        input, select { width: 100%; margin-top: 4px; padding: 5px; box-sizing: border-box; }
+        #panel { width: 280px; background: white; padding: 10px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); overflow-y: auto; flex-shrink: 0; }
+        .control-group { border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-bottom: 8px; }
+        .control-group:last-child { border-bottom: none; margin-bottom: 0; }
+        .control-group h3 { margin: 0 0 6px 0; font-size: 0.95rem; }
+        label { display: block; font-size: 0.8rem; margin-top: 6px; font-weight: bold; }
+        input, select { width: 100%; margin-top: 3px; padding: 4px; }
+        button { padding: 5px 10px; margin: 2px; cursor: pointer; }
 
-        /* 중앙 및 우측 영역 */
-        #content { flex: 1; display: flex; flex-direction: column; gap: 10px; }
-        #visual-section { height: 40%; background: white; border-radius: 8px; padding: 10px; position: relative; }
-        #tab-section { flex: 1; background: white; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; }
+        #content { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+        #visual-section { height: 35%; background: white; border-radius: 6px; padding: 8px; flex-shrink: 0; }
+        #tab-section { flex: 1; background: white; border-radius: 6px; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
         
-        .tabs { display: flex; background: #eee; }
-        .tab-btn { flex: 1; border: none; padding: 10px; cursor: pointer; transition: 0.3s; }
+        .tabs { display: flex; background: #eee; flex-shrink: 0; }
+        .tab-btn { flex: 1; border: none; padding: 8px 5px; cursor: pointer; font-size: 0.85rem; }
         .tab-btn.active { background: white; font-weight: bold; border-bottom: 3px solid var(--accent); }
-        .tab-content { display: none; flex: 1; padding: 15px; overflow-y: auto; }
-        .tab-content.active { display: block; }
+        .tab-content { display: none; flex: 1; padding: 10px; overflow-y: auto; min-height: 0; }
+        .tab-content.active { display: flex; flex-direction: column; }
 
         canvas { width: 100% !important; height: 100% !important; }
-        .data-card { background: #f8f9fa; border-left: 4px solid var(--accent); padding: 10px; margin-top: 10px; font-size: 0.9rem; line-height: 1.5; }
-        .eq-box { font-family: 'Times New Roman', serif; background: #eef; padding: 5px; border-radius: 4px; display: block; margin: 5px 0; }
+        .data-card { background: #f8f9fa; border-left: 4px solid var(--accent); padding: 8px; margin-top: 6px; font-size: 0.85rem; line-height: 1.4; }
+        .eq-box { font-family: 'Times New Roman', serif; background: #eef; padding: 4px; border-radius: 4px; display: block; margin: 4px 0; font-size: 0.85rem; }
+        h4 { margin: 0 0 6px 0; font-size: 0.95rem; }
     </style>
 </head>
 <body>
@@ -96,7 +100,7 @@
 
             <div id="tab-stress" class="tab-content active">
                 <h4>Mohr 원 및 파괴 분석</h4>
-                <div style="height: 250px;"><canvas id="mohrChart"></canvas></div>
+                <div style="flex: 1; min-height: 150px;"><canvas id="mohrChart"></canvas></div>
                 <div class="data-card">
                     <span class="eq-box">τ = C + σn tanφ</span>
                     <p id="stress-analysis">상태 분석 중...</p>
@@ -105,7 +109,7 @@
 
             <div id="tab-seismic" class="tab-content">
                 <h4>주시곡선 (Travel-time Curve)</h4>
-                <div style="height: 250px;"><canvas id="travelTimeChart"></canvas></div>
+                <div style="flex: 1; min-height: 150px;"><canvas id="travelTimeChart"></canvas></div>
                 <div class="data-card">
                     <span class="eq-box">Vp = √((K+4μ/3)/ρ), Vs = √(μ/ρ)</span>
                     <p id="seismic-data"></p>
@@ -114,7 +118,7 @@
 
             <div id="tab-gravity" class="tab-content">
                 <h4>중력 이상 및 지각 뿌리</h4>
-                <div style="height: 250px;"><canvas id="gravityChart"></canvas></div>
+                <div style="flex: 1; min-height: 150px;"><canvas id="gravityChart"></canvas></div>
                 <div class="data-card">
                     <span class="eq-box">FAC = 0.3086h, BC = 0.0419ρh</span>
                     <p id="isostasy-data"></p>
